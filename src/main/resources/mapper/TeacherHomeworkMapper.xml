@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bysj.wyb.teacher.mapper.TeacherHomeworkMapper">
+    <insert id="addHomework" parameterType="com.bysj.wyb.teacher.entity.Homework">
+        insert into pd_homework set id=#{id},createtime=#{createtime},name=#{name},classnumber=#{classnumber},courseid=#{courseid},teacherid=#{teacherid},context=#{context}
+    </insert>
+
+    <insert id="reStatus" parameterType="string">
+        insert into pd_homework_status set homeworkid=#{homeworkId},uid=#{uid}
+    </insert>
+
+    <select id="backUid" resultType="string">
+        select uid from pd_course_choose where courseid=#{courseId}
+    </select>
+
+    <select id="findHomeworkStatu" resultType="com.bysj.wyb.teacher.vo.HomeworkStatusVo">
+        SELECT ph.id as homeworkId,ph.name as homeworkName,ph.context,phs.uid as stuId,ps.name as stuName,ph.classnumber as classNumber,
+        phs.status as upStatu, ph.createtime as createTime,phs.upurl as url,phs.score
+
+        from pd_homework as ph,pd_homework_status as phs,pd_student as ps
+        where ph.teacherid=#{teacherUid} and phs.homeworkid=ph.id and phs.uid=ps.uid
+    </select>
+
+    <update id="giveScore" parameterType="com.bysj.wyb.teacher.vo.HomeworkStatusVo">
+        update pd_homework_status set score=#{score} where homeworkid=#{homeworkId} and uid=#{stuId}
+    </update>
+
+    <select id="findHomeworkStatuByKey" resultType="com.bysj.wyb.teacher.vo.HomeworkStatusVo">
+        SELECT ph.id as homeworkId,ph.name as homeworkName,ph.context,phs.uid as stuId,ps.name as stuName,ph.classnumber as classNumber,
+        phs.status as upStatu, ph.createtime as createTime,phs.upurl as url,phs.score
+
+        from pd_homework as ph,pd_homework_status as phs,pd_student as ps
+        where ph.teacherid=#{uid} and phs.homeworkid=ph.id and phs.uid=ps.uid and concat(ph.`name`,ps.name,ps.classnumber) like "%"#{key}"%"
+    </select>
+
+    <select id="findHomworkList" resultType="com.bysj.wyb.teacher.entity.Homework">
+        select ph.id,ph.name,ph.createtime,ph.classnumber, pc.name as courseid,ph.teacherid,ph.context from pd_homework as ph,pd_course as pc where teacherid=#{uid} and ph.courseid=pc.courseid
+    </select>
+
+    <delete id="delHomework" parameterType="string">
+        DELETE ph,phs from pd_homework as ph,pd_homework_status as phs where ph.id=#{homeworkId} and phs.homeworkid=ph.id
+    </delete>
+</mapper>

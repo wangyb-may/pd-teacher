@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bysj.wyb.teacher.mapper.TeacherCourseMapper">
+    <insert id="addCourse" parameterType="com.bysj.wyb.teacher.entity.Course">
+        insert into pd_course set courseid=#{courseid},name=#{name},teacher=#{teacher},classnumber=#{classnumber}
+    </insert>
+
+    <select id="findCourseList" resultType="com.bysj.wyb.teacher.entity.Course">
+        select * from pd_course where teacher=#{uid}
+    </select>
+
+    <update id="editCourse" parameterType="com.bysj.wyb.teacher.entity.Course">
+        update pd_course set name=#{name},coursecontext=#{courseContext},classnumber=#{classNumber},updatetime=#{updateTime}
+        where courseid=#{courseId}
+    </update>
+</mapper>
