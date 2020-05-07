@@ -1,7 +1,9 @@
 package com.bysj.wyb.teacher.service;
 
 import com.bysj.wyb.teacher.entity.Course;
+import com.bysj.wyb.teacher.entity.Homework;
 import com.bysj.wyb.teacher.mapper.TeacherCourseMapper;
+import com.bysj.wyb.teacher.mapper.TeacherHomeworkMapper;
 import com.bysj.wyb.teacher.result.HandleResult;
 import com.bysj.wyb.teacher.result.Result;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -23,11 +26,14 @@ public class TeacherCourseServiceImpl implements TeacherCourseService{
 
     HandleResult hr=new HandleResult();
 
+    @Resource
+    TeacherHomeworkMapper teacherHomeworkMapper;
+
     @Override
     public Result addCourse(Course course) {
-        HandleResult hr=new HandleResult();
         String strNow=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()).replaceAll("-","").replaceAll(":","").replaceAll(" ","");
         course.setCourseId(strNow);
+        course.setCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         if(teacherCourseMapper.addCourse(course)==1)
         {
             return hr.outResultWithoutData("0","添加成功");
@@ -50,18 +56,31 @@ public class TeacherCourseServiceImpl implements TeacherCourseService{
 
     @Override
     public Result editCourse(Course course) {
-        HandleResult hr=new HandleResult();
         try {
             course.setUpdateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
             if(1==teacherCourseMapper.editCourse(course)){
-                hr.outResultWithoutData("0","课程信息更新成功");
+                return hr.outResultWithoutData("0","课程信息更新成功");
             }else{
-                hr.outResultWithoutData("1","课程信息更新失败，请检查更新信息或联系管理员");
+                return hr.outResultWithoutData("1","课程信息更新失败，请检查更新信息或联系管理员");
             }
         }catch(Exception e){
             log.error(e.getMessage());
-            hr.outResultWithoutData("1","服务异常，请联系管理员");
+            return hr.outResultWithoutData("1","服务异常，请联系管理员");
         }
-        return null;
+    }
+
+    @Override
+    public Result delCourse(Course course) {
+        try {
+            List<Homework> homeworkList=teacherCourseMapper.findHomeworkByCourse(course.getCourseId());
+            for(Homework h : homeworkList){
+                teacherHomeworkMapper.delHomework(h.getId());
+            }
+            teacherCourseMapper.delCourse(course.getCourseId());
+            return hr.outResultWithoutData("0","删除成功");
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return hr.outResultWithoutData("1","服务异常，请联系管理员");
+        }
     }
 }

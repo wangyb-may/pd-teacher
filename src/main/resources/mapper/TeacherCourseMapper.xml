@@ -2,15 +2,24 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.bysj.wyb.teacher.mapper.TeacherCourseMapper">
     <insert id="addCourse" parameterType="com.bysj.wyb.teacher.entity.Course">
-        insert into pd_course set courseid=#{courseid},name=#{name},teacher=#{teacher},classnumber=#{classnumber}
+        insert into pd_course
+        set courseid=#{courseId},name=#{name},teacher=#{teacher},classnumber=#{classNumber},coursecontext=#{courseContext},createtime=#{createTime}
     </insert>
 
     <select id="findCourseList" resultType="com.bysj.wyb.teacher.entity.Course">
-        select * from pd_course where teacher=#{uid}
+        select * from pd_course where teacher=#{uid} and isdelete=0
     </select>
 
     <update id="editCourse" parameterType="com.bysj.wyb.teacher.entity.Course">
         update pd_course set name=#{name},coursecontext=#{courseContext},classnumber=#{classNumber},updatetime=#{updateTime}
         where courseid=#{courseId}
     </update>
+
+    <update id="delCourse" parameterType="string">
+        update pd_course set isdelete=1 where courseid=#{courseId}
+    </update>
+
+    <select id="findHomeworkByCourse" resultType="com.bysj.wyb.teacher.entity.Homework">
+        select * from pd_homework where courseid=#{courseId}
+    </select>
 </mapper>

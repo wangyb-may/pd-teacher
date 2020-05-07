@@ -35,4 +35,9 @@ public class TeacherCourseController {
     public Result editCourse(@RequestBody Course course){
         return teacherCourseService.editCourse(course);
     }
+
+    @RequestMapping(value = "/delCourse")
+    public Result delCourse(@RequestBody Course course){
+        return teacherCourseService.delCourse(course);
+    }
 }

@@ -1,6 +1,7 @@
 package com.bysj.wyb.teacher.mapper;
 
 import com.bysj.wyb.teacher.entity.Course;
+import com.bysj.wyb.teacher.entity.Homework;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -16,4 +17,8 @@ public interface TeacherCourseMapper {
     List<Course> findCourseList(String uid);
 
     int editCourse(Course course);
+
+    int delCourse(String courseId);
+
+    List<Homework> findHomeworkByCourse(String courseId);
 }

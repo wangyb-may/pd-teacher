@@ -18,4 +18,6 @@ public interface TeacherCourseService {
     Result findCourseList(String uid);
 
     Result editCourse(Course course);
+
+    Result delCourse(Course course);
 }
