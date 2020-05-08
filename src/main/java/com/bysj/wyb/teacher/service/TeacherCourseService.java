@@ -1,7 +1,9 @@
 package com.bysj.wyb.teacher.service;
 
+import com.bysj.wyb.teacher.entity.Attachment;
 import com.bysj.wyb.teacher.entity.Course;
 import com.bysj.wyb.teacher.result.Result;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author wangyb
@@ -20,4 +22,10 @@ public interface TeacherCourseService {
     Result editCourse(Course course);
 
     Result delCourse(Course course);
+
+    Result upAttachment(MultipartFile file, Attachment attachment);
+
+    Result findAttachmentList(String uid);
+
+    Result delAtachment(Attachment attachment);
 }

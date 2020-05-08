@@ -22,4 +22,20 @@
     <select id="findHomeworkByCourse" resultType="com.bysj.wyb.teacher.entity.Homework">
         select * from pd_homework where courseid=#{courseId}
     </select>
+
+    <insert id="upAttachment" parameterType="com.bysj.wyb.teacher.entity.Attachment">
+        insert into pd_attachment set id=#{id},name=#{name},uptime=#{upTime},upurl=#{upUrl},uid=#{uid},courseid=#{courseId}
+    </insert>
+
+    <select id="findAttachmentList" resultType="com.bysj.wyb.teacher.entity.Attachment">
+        select pa.*,pc.name as courseName from pd_attachment as pa,pd_course as pc where uid=#{uid} and pa.courseid=pc.courseid
+    </select>
+
+    <delete id="delAttachment" parameterType="string">
+        delete from pd_attachment where id=#{attachmentId}
+    </delete>
+
+    <select id="findAttachmentIdListByCourse" resultType="string">
+        select id from pd_attachment where courseid=#{courseId};
+    </select>
 </mapper>

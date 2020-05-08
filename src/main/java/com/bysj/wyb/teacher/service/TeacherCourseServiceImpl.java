@@ -1,13 +1,18 @@
 package com.bysj.wyb.teacher.service;
 
+import com.bysj.wyb.teacher.entity.Attachment;
 import com.bysj.wyb.teacher.entity.Course;
 import com.bysj.wyb.teacher.entity.Homework;
+import com.bysj.wyb.teacher.feign.CommonFeign;
 import com.bysj.wyb.teacher.mapper.TeacherCourseMapper;
 import com.bysj.wyb.teacher.mapper.TeacherHomeworkMapper;
 import com.bysj.wyb.teacher.result.HandleResult;
+import com.bysj.wyb.teacher.result.IdWorker;
 import com.bysj.wyb.teacher.result.Result;
+import com.google.gson.internal.$Gson$Types;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
@@ -28,6 +33,9 @@ public class TeacherCourseServiceImpl implements TeacherCourseService{
 
     @Resource
     TeacherHomeworkMapper teacherHomeworkMapper;
+
+    @Resource
+    CommonFeign commonFeign;
 
     @Override
     public Result addCourse(Course course) {
@@ -76,11 +84,58 @@ public class TeacherCourseServiceImpl implements TeacherCourseService{
             for(Homework h : homeworkList){
                 teacherHomeworkMapper.delHomework(h.getId());
             }
+            List<String> attachmentIdList=teacherCourseMapper.findAttachmentIdListByCourse(course.getCourseId());
+            for(String x : attachmentIdList){
+                teacherCourseMapper.delAttachment(x);
+            }
             teacherCourseMapper.delCourse(course.getCourseId());
             return hr.outResultWithoutData("0","删除成功");
         }catch (Exception e){
             log.error(e.getMessage());
             return hr.outResultWithoutData("1","服务异常，请联系管理员");
+        }
+    }
+
+    @Override
+    public Result upAttachment(MultipartFile file, Attachment attachment) {
+        try {
+            Result res=commonFeign.upload(file, "attachment/"+attachment.getName());
+            if(null!=res.getData()){
+                attachment.setUpUrl(res.getData().toString());
+                IdWorker snow=new IdWorker(1,1,1);
+                attachment.setId(String.valueOf(snow.nextId()));
+                attachment.setUpTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+                teacherCourseMapper.upAttachment(attachment);
+                List<Attachment> attachmentList=teacherCourseMapper.findAttachmentList(attachment.getUid());
+                return hr.outResultWithData("0","插入成功!已更新数据！",attachmentList);
+            }else{
+                return hr.outResultWithoutData("1","插入失败，请联系管理员");
+            }
+        }catch(Exception e){
+            log.error(e.getMessage());
+            return hr.outResultWithoutData("1","服务异常，请联系管理员");
+        }
+
+    }
+
+    @Override
+    public Result findAttachmentList(String uid) {
+        try{
+            return hr.outResultWithData("0","查询成功",teacherCourseMapper.findAttachmentList(uid));
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return hr.outResultWithoutData("1","服务异常，请联系管理员");
+        }
+    }
+
+    @Override
+    public Result delAtachment(Attachment attachment) {
+        try{
+            teacherCourseMapper.delAttachment(attachment.getId());
+            return hr.outResultWithoutData("0","删除成功！");
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return hr.outResultWithoutData("1","服务异常，请联系管理员!");
         }
     }
 }
