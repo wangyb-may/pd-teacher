@@ -1,6 +1,7 @@
 package com.bysj.wyb.teacher.service;
 
 
+import com.bysj.wyb.teacher.entity.Teacher;
 import com.bysj.wyb.teacher.result.Result;
 
 /**
@@ -9,4 +10,8 @@ import com.bysj.wyb.teacher.result.Result;
 public interface TeacherService {
 
     Result login(String uid,String password);
+
+    Result updatePersonalImformation(Teacher teacher);
+
+
 }

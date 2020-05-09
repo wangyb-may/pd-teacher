@@ -10,4 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
 public interface TeacherMapper {
 
     Teacher login(String uid);
+
+    int updatePersonalImformation(Teacher teacher);
+
 }
