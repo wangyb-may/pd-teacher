@@ -28,4 +28,6 @@ public interface TeacherCourseService {
     Result findAttachmentList(String uid);
 
     Result delAtachment(Attachment attachment);
+
+    Result findStudentByCourse(String courseId);
 }

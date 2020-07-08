@@ -9,6 +9,7 @@ import com.bysj.wyb.teacher.mapper.TeacherHomeworkMapper;
 import com.bysj.wyb.teacher.result.HandleResult;
 import com.bysj.wyb.teacher.result.IdWorker;
 import com.bysj.wyb.teacher.result.Result;
+import com.bysj.wyb.teacher.vo.HomeworkStatusVo;
 import com.google.gson.internal.$Gson$Types;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -136,6 +137,17 @@ public class TeacherCourseServiceImpl implements TeacherCourseService{
         }catch (Exception e){
             log.error(e.getMessage());
             return hr.outResultWithoutData("1","服务异常，请联系管理员!");
+        }
+    }
+
+    @Override
+    public Result findStudentByCourse(String courseId) {
+        try{
+            List<HomeworkStatusVo> homeworkStatusVoList=teacherCourseMapper.findStudentByCourse(courseId);
+            return hr.outResultWithData("0","查询成功",homeworkStatusVoList);
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return hr.outResultWithoutData("1","服务异常");
         }
     }
 }

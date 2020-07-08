@@ -38,4 +38,8 @@
     <select id="findAttachmentIdListByCourse" resultType="string">
         select id from pd_attachment where courseid=#{courseId};
     </select>
+
+    <select id="findStudentByCourse" resultType="com.bysj.wyb.teacher.vo.HomeworkStatusVo">
+        select ps.nickname as stuId,ps.name as stuName from pd_student as ps,pd_course_choose as pcc where pcc.courseid=#{courseId} and pcc.uid=ps.uid
+    </select>
 </mapper>

@@ -56,4 +56,9 @@ public class TeacherCourseController {
     public Result delAttachment(@RequestBody Attachment attachment){
         return teacherCourseService.delAtachment(attachment);
     }
+
+    @RequestMapping(value = "/findStudentByCourse")
+    public Result findStudentByCourse(@RequestBody Map<String,String> resBody){
+        return teacherCourseService.findStudentByCourse(resBody.get("courseId"));
+    }
 }
