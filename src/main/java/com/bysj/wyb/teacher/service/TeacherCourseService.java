@@ -23,6 +23,12 @@ public interface TeacherCourseService {
 
     Result delCourse(Course course);
 
+    /**
+     * 上传附件
+     * @param file
+     * @param attachment
+     * @return
+     */
     Result upAttachment(MultipartFile file, Attachment attachment);
 
     Result findAttachmentList(String uid);
